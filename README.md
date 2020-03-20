@@ -10,7 +10,10 @@ In my stubbed service,
 it caused the entities to accumulate redundant links!!
 
 ## Other explorations to do/try
- - other media types than HAL (HAL-Forms?).
+ - other media types than HAL
+    - HAL-FORMS (supported)
+    - SIREN (not officially supported)
+    - HYRDA (not officially supported)
  - use affordances
  - use Representation Assembler
 
