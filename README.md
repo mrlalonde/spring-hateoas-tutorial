@@ -9,7 +9,18 @@ All the tutorials with representation models actually mutate them which I found 
 In my stubbed service,
 it caused the entities to accumulate redundant links!!
 
+## Other explorations to do/try
+ - other media types than HAL (HAL-Forms?).
+ - use affordances
+ - use Representation Assembler
+
+
 ## More general HATOAS notes
+
+### Media Type explorations:
+Some media types (Collections+json,  Uber) are really geared towards data-driven UIs where the data is all expressed as key-values.
+
+This makes for an awkward API.  At lest, HAL is a bit subtle about the links. 
 
 ### Infoq presentation: 
 https://www.infoq.com/presentations/spring-hateoas-1/
