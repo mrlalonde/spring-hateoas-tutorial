@@ -17,7 +17,6 @@ it caused the entities to accumulate redundant links!!
  - use affordances
  - use Representation Assembler
 
-
 ## More general HATOAS notes
 
 ### Media Type explorations:
