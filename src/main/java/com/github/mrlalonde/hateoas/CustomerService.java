@@ -1,35 +1,41 @@
 package com.github.mrlalonde.hateoas;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class CustomerService {
 
-    private final Map<String, Customer> customers = Map.of(
-            "1", new Customer("1", "Larry", "Stooges"),
-            "2", new Customer("2", "Curly", "Stooges")
-    );
-
+    @Autowired
+    private CustomerRepository customerRepository;
 
     private final Map<String, Collection<Order>> orders = Map.of(
-      "1", List.of(new Order("order-a", 10.0, 5),
+            "1", List.of(new Order("order-a", 10.0, 5),
                     new Order("order-b", 50.0, 1)),
-      "2", List.of(new Order("order-c", 1.99, 100))
+            "2", List.of(new Order("order-c", 1.99, 100))
     );
 
     public Customer getCustomerDetail(String customerId) {
-        return customers.get(customerId);
+        return customerRepository.findById(Long.valueOf(customerId)).orElse(null);
     }
 
     public Collection<Customer> allCustomers() {
-        return customers.values();
+        return StreamSupport.stream(customerRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
     }
 
     public Collection<Order> getAllOrdersForCustomer(String customerId) {
-        return orders.get(customerId);
+        return orders.getOrDefault(customerId, Collections.emptyList());
+    }
+
+    public Customer addCustomer(Customer newCustomer) {
+        return customerRepository.save(newCustomer);
     }
 }

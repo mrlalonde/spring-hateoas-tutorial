@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Map;
@@ -39,8 +36,13 @@ public class CustomerController {
     }
 
     @GetMapping("/{customerId}")
-    public EntityModel<Customer> getCustomerById(@PathVariable String customerId) {
-        return toCustomerRepresentation(customerService.getCustomerDetail(customerId));
+    public EntityModel<Customer> getCustomerById(@PathVariable long customerId) {
+        return toCustomerRepresentation(customerService.getCustomerDetail(""+customerId));
+    }
+
+    @PostMapping(value = "", consumes = "application/json")
+    public EntityModel<Customer> post(@RequestBody Customer newCustomer) {
+        return toCustomerRepresentation(customerService.addCustomer(newCustomer));
     }
 
     @GetMapping(value = "/{customerId}/orders", produces = {"application/hal+json"})
@@ -58,9 +60,9 @@ public class CustomerController {
         var res = new EntityModel<>(customer,
                 linkTo(CustomerController.class).slash(customer.getCustomerId()).withSelfRel());
 
-        if (customerService.getAllOrdersForCustomer(customer.getCustomerId()).size() > 0) {
+        if (customerService.getAllOrdersForCustomer("" + customer.getCustomerId()).size() > 0) {
             Link ordersLink = linkTo(methodOn(CustomerController.class)
-                    .getOrdersForCustomer(customer.getCustomerId())).withRel("allOrders");
+                    .getOrdersForCustomer("" + customer.getCustomerId())).withRel("allOrders");
             res.add(ordersLink);
         }
 
@@ -78,7 +80,7 @@ public class CustomerController {
 
     @GetMapping(value = "/{customerId}/orders/{orderId}", produces = {"application/hal+json"})
     public EntityModel<Order> getOrderById(String customerId, String orderId) {
-        return customerService.getAllOrdersForCustomer(customerId).stream()
+        return customerService.getAllOrdersForCustomer(""+ customerId).stream()
                 .filter(order -> orderId.equals(order.getOrderId()))
                 .map(withSelfLink(customerId))
                 .findFirst()

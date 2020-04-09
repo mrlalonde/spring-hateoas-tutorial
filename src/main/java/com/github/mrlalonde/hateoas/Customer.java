@@ -1,20 +1,34 @@
 package com.github.mrlalonde.hateoas;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Customer {
-    private String customerId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long customerId;
+
     private String customerName;
     private String companyName;
 
     protected Customer() {
     }
 
-    Customer(String customerId, String customerName, String companyName) {
+    Customer(long customerId, String customerName, String companyName) {
         this.customerId = customerId;
         this.customerName = customerName;
         this.companyName = companyName;
     }
 
-    public String getCustomerId() {
+    Customer(String customerName, String companyName) {
+        this.customerName = customerName;
+        this.companyName = companyName;
+    }
+
+    public long getCustomerId() {
         return customerId;
     }
 
@@ -24,17 +38,6 @@ public class Customer {
 
     public String getCompanyName() {
         return companyName;
-    }
 
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
     }
 }
