@@ -1,6 +1,7 @@
 package com.github.mrlalonde.hateoas;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import javax.transaction.Transactional;
 import java.io.IOException;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -62,6 +64,23 @@ public class HateoasApplicationTest {
         mockMvc.perform(get("/customers/{id}", cust2.getCustomerId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customerId", is((int) cust2.getCustomerId())));
+    }
+
+    @Test
+    public void testExampleUUIDs() throws Exception {
+        var example = objectMapper.readValue(mockMvc.perform(post("/examples")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(new ExampleUuid("TestValue"))))
+                .andReturn()
+                .getResponse()
+                .getContentAsByteArray(), ExampleUuid.class);
+
+        assertThat(example.getUuid()).isNotNull();
+
+        mockMvc.perform(get("/examples/{id}", example.getUuid()))
+                .andExpect(status().isOk());
+
+
     }
 
     private Customer givenCustomerFrom(ResultActions resultActions) throws IOException {
